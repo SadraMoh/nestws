@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Index</title>
+</head>
+
+<body>
+
+  <div x-data="chat" style="display:flex; flex-direction: column">
+
+    <ul style="display:flex; flex-direction: column">
+      <template x-for="msg in messages">
+        <p class="msg" x-text="msg"></p>
+      </template>
+    </ul>
+
+    <div style="display: flex; flex-direction: row;">
+      <textarea x-model="message"></textarea>
+      <button x-on:click="sendMessage(message)">send</button>
+    </div>
+
+  </div>
+
+  <script>
+    window.require = () => { Socket: { } };
+  </script>
+
+  <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"
+    integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
+    crossorigin="anonymous"></script>
+
+  <script src="/chat.js"></script>
+
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+
+</body>
+
+</html>
