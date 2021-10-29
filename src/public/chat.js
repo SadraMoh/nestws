@@ -1,9 +1,10 @@
 try {
+  window.require = () => { Socket: { } };
   const { Socket } = require("socket.io");
 } catch (e) { }
 
 /** @type { Socket } */
-const socket = io('http://localhost:3000');
+const socket = io('http://192.168.1.8:3000');
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('chat', () => ({

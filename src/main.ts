@@ -4,16 +4,23 @@ import { join,resolve  } from 'path';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
+  
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
   );
   
+  app.enableCors({
+    origin: '*',
+  })
+  
   app.useStaticAssets(resolve('./src/public'));
   app.setBaseViewsDir(resolve('./src/views'));
+
+  // app.use(helmet());
   
   app.setViewEngine('hbs');
 
-  await app.listen(3000);
+  await app.listen(3000, '0.0.0.0');
   
 }
 
