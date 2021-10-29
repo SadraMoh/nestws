@@ -6,8 +6,6 @@ import { Request, Response, NextFunction } from 'express';
 export class LoggerMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
 
-    res.setHeader('Access-Control-Allow-Origin', "*")
-
     next();
   }
 }

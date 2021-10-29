@@ -11,5 +11,11 @@ export class AppController {
     return { message: 'Hello world!!!' };
   }
 
+  @Get('chat')
+  @Render('chat')
+  chat() {
+    return { message: 'Websocket Chat' };
+  }
+
 
 }

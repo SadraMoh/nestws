@@ -16,6 +16,7 @@ document.addEventListener('alpine:init', () => {
     message: '',
 
     init() {
+      // Receive message
       socket.on('message', (data) => {
         this.messages.push(data);
       })
