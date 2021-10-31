@@ -3,8 +3,10 @@ try {
   const { Socket } = require("socket.io");
 } catch (e) { }
 
+const ip = document.getElementById('socketip').value;
+
 /** @type { Socket } */
-const socket = io('http://192.168.1.8:3000');
+const socket = io(ip);
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('chat', () => ({

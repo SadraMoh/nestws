@@ -1,13 +1,14 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ChatGateway } from './chat.gateway';
 import { LoggerMiddleware } from './logger.middleware';
+import { ConfigModule } from '@nestjs/config';
+import { GameService } from './services/game/game.service';
 
 @Module({
-  imports: [],
+  imports: [ConfigModule.forRoot()],
   controllers: [AppController],
-  providers: [AppService, ChatGateway],
+  providers: [ChatGateway, GameService],
 })
 export class AppModule {
 

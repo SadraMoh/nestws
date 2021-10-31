@@ -1,21 +1,25 @@
 import { Controller, Get, Render } from '@nestjs/common';
-import { AppService } from './app.service';
+import { GameService } from './services/game/game.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly game: GameService) { }
 
   @Get()
   @Render('index')
   root() {
-    return { message: 'Hello world!!!' };
+    return { socketIP: process.env.WEBSOCKET_IP };
   }
 
   @Get('chat')
   @Render('chat')
   chat() {
-    return { message: 'Websocket Chat' };
+    return { socketIP: process.env.WEBSOCKET_IP };
   }
 
+  @Get('getAllPlayers')
+  getAllPlayers() {
+    return this.game.getAllPlayerData();
+  }
 
 }

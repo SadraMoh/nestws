@@ -10,11 +10,13 @@
 
 <body>
 
+  <input type="hidden" id="socketip" value="{{ socketIP }}">
+
   <div x-data="chat" style="display:flex; flex-direction: column">
 
     <ul style="display:flex; flex-direction: column">
       <template x-for="msg in messages">
-        <p class="msg" x-text="msg"></p>
+        <p class="msg" x-html="msg"></p>
       </template>
     </ul>
 
