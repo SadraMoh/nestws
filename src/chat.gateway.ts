@@ -1,52 +1,44 @@
-import { MessageBody, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server, Socket } from 'socket.io';
 import { GameService } from "./services/game/game.service";
 import { Player } from "./model/player";
 
 @WebSocketGateway({ cors: true })
-export class ChatGateway implements OnGatewayInit {
-
-  constructor(public game: GameService) {
-
-  }
+export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
   @WebSocketServer()
-  server: Server;
-
+  io: Server;
+  
+  constructor(public game: GameService) { }
 
   afterInit() {
 
-    this.server.on('connection', (e) => this.connection(e))
-    this.server.on('disconnect', (e) => this.disconnection(e))
+  }
+  
+  handleDisconnect(client: Socket) {
+    const disconnectedPlayer =
+      this.game.players?.find(i => i.ip == client.handshake.address);
+
+    if (disconnectedPlayer) {
+      this.io.emit('player-disconnected', disconnectedPlayer.ip)
+    }
 
   }
-
-  connection(socket: Socket) {
-
-    const newPlayer = new Player(socket);
+  
+  handleConnection(client: Socket, ...args: any[]) {
+    const newPlayer = new Player(client);
 
     if (!this.game.players?.find(i => i.ip == newPlayer.ip)) {
       this.game.players.push(newPlayer);
-      this.server.emit('player-connected', newPlayer.ip);
+      this.io.emit('player-connected', newPlayer.ip);
     }
-  }
-
-  disconnection(socket: Socket) {
-
-    const disconnectedPlayer =
-      this.game.players?.find(i => i.ip == socket.handshake.address);
-
-    if (disconnectedPlayer) {
-      this.server.emit('player-disconnected', disconnectedPlayer.ip)
-    }
-
   }
 
   @SubscribeMessage('move')
   async move(socket: Socket) {
 
     const sender = this.game.getPlayerBySocketId(socket.id);
-    this.server.emit('move', sender.ip + ' ' + socket.data)
+    this.io.emit('move', sender.ip + ' ' + socket.data)
   }
 
   //- 
@@ -56,9 +48,6 @@ export class ChatGateway implements OnGatewayInit {
 
     console.log('received message:', message)
 
-    this.server.emit('message', message);
+    this.io.emit('message', message);
   }
-
-
-
 }
