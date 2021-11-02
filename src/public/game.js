@@ -91,8 +91,6 @@ document.addEventListener('alpine:init', () => {
       socket.on('player-disconnected', (playerid) => {
         this.messages.push('[-] ' + playerid);
       })
-
-
       
     },
 
