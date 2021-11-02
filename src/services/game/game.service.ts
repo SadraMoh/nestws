@@ -18,4 +18,8 @@ export class GameService {
     return this.players.find(i => i.socketId === socketId);
   }
 
+  public getPlayerByIp(ip: string): Player {
+    return this.players.find(i => i.ip === ip);
+  }
+
 }

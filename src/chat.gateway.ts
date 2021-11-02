@@ -11,23 +11,24 @@ export class ChatGateway implements OnGatewayInit {
   }
 
   @WebSocketServer()
-  server: Server;
+  io: Server;
 
 
   afterInit() {
 
-    this.server.on('connection', (e) => this.connection(e))
-    this.server.on('disconnect', (e) => this.disconnection(e))
+    this.io.on('connection', (e) => this.connection(e))
+    this.io.on('disconnect', (e) => this.disconnection(e))
 
   }
 
   connection(socket: Socket) {
 
     const newPlayer = new Player(socket);
+    console.log('player-connected: ' + newPlayer.ip)
 
     if (!this.game.players?.find(i => i.ip == newPlayer.ip)) {
       this.game.players.push(newPlayer);
-      this.server.emit('player-connected', newPlayer.ip);
+      this.io.emit('player-connected', newPlayer.ip);
     }
   }
 
@@ -37,7 +38,7 @@ export class ChatGateway implements OnGatewayInit {
       this.game.players?.find(i => i.ip == socket.handshake.address);
 
     if (disconnectedPlayer) {
-      this.server.emit('player-disconnected', disconnectedPlayer.ip)
+      this.io.emit('player-disconnected', disconnectedPlayer.ip)
     }
 
   }
@@ -45,8 +46,8 @@ export class ChatGateway implements OnGatewayInit {
   @SubscribeMessage('move')
   async move(socket: Socket) {
 
-    const sender = this.game.getPlayerBySocketId(socket.id);
-    this.server.emit('move', sender.ip + ' ' + socket.data)
+    const sender = this.game.getPlayerByIp(socket.id);
+    this.io.emit('move', sender.ip + ' ' + socket.data)
   }
 
   //- 
@@ -56,7 +57,7 @@ export class ChatGateway implements OnGatewayInit {
 
     console.log('received message:', message)
 
-    this.server.emit('message', message);
+    this.io.emit('message', message);
   }
 
 
